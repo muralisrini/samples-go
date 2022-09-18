@@ -71,7 +71,7 @@ func (s *UnitTestSuite) Test_MutexWorkflow_Success() {
 		AcquireLockSignalName, mock.Anything).Return(nil)
 
 	s.env.ExecuteWorkflow(
-		MutexWorkflow,
+		SampleMutexWorkflow,
 		mockNamespace,
 		mockResourceID,
 		mockUnlockTimeout,
@@ -93,7 +93,7 @@ func (s *UnitTestSuite) Test_MutexWorkflow_TimeoutSuccess() {
 		AcquireLockSignalName, mock.Anything).Return(nil)
 
 	s.env.ExecuteWorkflow(
-		MutexWorkflow,
+		SampleMutexWorkflow,
 		mockNamespace,
 		mockResourceID,
 		mockUnlockTimeout,

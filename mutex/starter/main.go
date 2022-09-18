@@ -22,27 +22,41 @@ func main() {
 
 	// This workflow ID can be user business logic identifier as well.
 	resourceID := uuid.New()
-	workflow1Options := client.StartWorkflowOptions{
-		ID:        "SampleWorkflow1WithMutex_" + uuid.New(),
-		TaskQueue: "mutex",
-	}
+	for i := 1; i < 10; i++ {
+		workflow1Options := client.StartWorkflowOptions{
+			ID:        "SampleWorkflow1WithMutex_" + uuid.New(),
+			TaskQueue: "mutex",
+		}
 
-	workflow2Options := client.StartWorkflowOptions{
-		ID:        "SampleWorkflow2WithMutex_" + uuid.New(),
-		TaskQueue: "mutex",
-	}
+		workflow2Options := client.StartWorkflowOptions{
+			ID:        "SampleWorkflow2WithMutex_" + uuid.New(),
+			TaskQueue: "mutex",
+		}
 
-	we, err := c.ExecuteWorkflow(context.Background(), workflow1Options, mutex.SampleWorkflowWithMutex, resourceID)
-	if err != nil {
-		log.Fatalln("Unable to execute workflow1", err)
-	} else {
-		log.Println("Started workflow1", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
-	}
+		ctx1 := context.Background()
+		we1, err := c.ExecuteWorkflow(ctx1, workflow1Options, mutex.SampleWorkflowWithMutex, resourceID)
+		if err != nil {
+			log.Fatalln("Unable to execute workflow1", err)
+		} else {
+			log.Println("Started workflow1", "WorkflowID", we1.GetID(), "RunID", we1.GetRunID())
+		}
 
-	we, err = c.ExecuteWorkflow(context.Background(), workflow2Options, mutex.SampleWorkflowWithMutex, resourceID)
-	if err != nil {
-		log.Fatalln("Unable to execute workflow2", err)
-	} else {
-		log.Println("Started workflow2", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
+		ctx2 := context.Background()
+		we2, err := c.ExecuteWorkflow(ctx2, workflow2Options, mutex.SampleWorkflowWithMutex, resourceID)
+		if err != nil {
+			log.Fatalln("Unable to execute workflow2", err)
+		} else {
+			log.Println("Started workflow2", "WorkflowID", we2.GetID(), "RunID", we2.GetRunID())
+		}
+
+		err = we2.Get(ctx1, nil)
+		if err != nil {
+			log.Fatalln("Unable to get workflow1", err)
+		}
+
+		err = we2.Get(ctx2, nil)
+		if err != nil {
+			log.Fatalln("Unable to get workflow2", err)
+		}
 	}
 }

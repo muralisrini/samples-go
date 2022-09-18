@@ -73,8 +73,8 @@ func (s *Mutex) Lock(ctx workflow.Context,
 	return unlockFunc, nil
 }
 
-// MutexWorkflow used for locking a resource
-func MutexWorkflow(
+// SampleMutexWorkflow used for locking a resource
+func SampleMutexWorkflow(
 	ctx workflow.Context,
 	namespace string,
 	resourceID string,
@@ -154,7 +154,7 @@ func SignalWithStartMutexWorkflowActivity(
 	}
 	wr, err := c.SignalWithStartWorkflow(
 		ctx, workflowID, RequestLockSignalName, senderWorkflowID,
-		workflowOptions, MutexWorkflow, namespace, resourceID, unlockTimeout)
+		workflowOptions, SampleMutexWorkflow, namespace, resourceID, unlockTimeout)
 
 	if err != nil {
 		activity.GetLogger(ctx).Error("Unable to signal with start workflow", "Error", err)
@@ -205,7 +205,7 @@ func SampleWorkflowWithMutex(
 
 	// emulate long running process
 	logger.Info("critical operation started")
-	_ = workflow.Sleep(ctx, 10*time.Second)
+	_ = workflow.Sleep(ctx, 1*time.Second)
 	logger.Info("critical operation finished")
 
 	_ = unlockFunc()

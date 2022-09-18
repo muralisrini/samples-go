@@ -25,7 +25,7 @@ func main() {
 	})
 
 	w.RegisterActivity(mutex.SignalWithStartMutexWorkflowActivity)
-	w.RegisterWorkflow(mutex.MutexWorkflow)
+	w.RegisterWorkflow(mutex.SampleMutexWorkflow)
 	w.RegisterWorkflow(mutex.SampleWorkflowWithMutex)
 
 	err = w.Run(worker.InterruptCh())
